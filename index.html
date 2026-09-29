@@ -199,6 +199,7 @@ footer{background:#fff;padding:34px 0 26px}
   .hero .wrap{grid-template-columns:1fr;gap:22px;padding-top:24px}
   .hero .feria{max-width:200px}
   .prog,.acts{grid-template-columns:1fr}
+  .f.w3{grid-column:span 6}
   .slots{grid-template-columns:repeat(4,1fr)}
 }
 @media (max-width:620px){
@@ -375,20 +376,15 @@ footer{background:#fff;padding:34px 0 26px}
       </fieldset>
 
       <fieldset>
-        <legend><span class="n">3</span>Ciclos formativos que imparte el centro</legend>
-        <p style="margin:0 0 14px;font-size:14px;color:var(--muted)">Escribe un ciclo por línea. Deja en blanco los grados que no impartáis.</p>
+        <legend><span class="n">3</span>Oferta formativa del centro</legend>
+        <p style="margin:0 0 14px;font-size:14px;color:var(--muted)">Escribe un ciclo o certificado por línea. Deja en blanco lo que no impartáis. Si sois un centro de formación para el empleo, rellena "Certificados de Profesionalidad".</p>
         <div class="grid" data-ciclos>
-          <div class="f w4"><label class="l" for="c_gb">Grado Básico</label><textarea id="c_gb" name="gradoBasico" placeholder="Ej. Servicios Administrativos"></textarea></div>
-          <div class="f w4"><label class="l" for="c_gm">Grado Medio</label><textarea id="c_gm" name="gradoMedio" placeholder="Ej. Cocina y Gastronomía"></textarea></div>
-          <div class="f w4"><label class="l" for="c_gs">Grado Superior</label><textarea id="c_gs" name="gradoSuperior" placeholder="Ej. Dirección de Cocina"></textarea></div>
-          <div class="f w12" style="margin-top:-8px"><div class="em">Indica al menos un ciclo formativo.</div></div>
+          <div class="f w3"><label class="l" for="c_gb">Grado Básico</label><textarea id="c_gb" name="gradoBasico" placeholder="Ej. Servicios Administrativos"></textarea></div>
+          <div class="f w3"><label class="l" for="c_gm">Grado Medio</label><textarea id="c_gm" name="gradoMedio" placeholder="Ej. Cocina y Gastronomía"></textarea></div>
+          <div class="f w3"><label class="l" for="c_gs">Grado Superior</label><textarea id="c_gs" name="gradoSuperior" placeholder="Ej. Dirección de Cocina"></textarea></div>
+          <div class="f w3"><label class="l" for="c_cp">Certificados de Profesionalidad</label><textarea id="c_cp" name="certificados" placeholder="Ej. HOTR0108 Operaciones básicas de cocina"></textarea></div>
+          <div class="f w12" style="margin-top:-8px"><div class="em">Indica al menos un ciclo formativo o certificado de profesionalidad.</div></div>
         </div>
-      </fieldset>
-
-      <fieldset>
-        <legend><span class="n">4</span>¿A qué actividades vais a asistir?</legend>
-        <div class="acts" data-acts></div>
-        <div class="f w12" data-acts-err style="margin:0"><div class="em" style="margin-bottom:14px">Selecciona al menos una actividad.</div></div>
       </fieldset>
 
       <label class="consent" data-consent><input type="checkbox" name="rgpd" required><span>He leído y acepto que los datos se utilicen para gestionar la inscripción en la Feria FP Pyme 2026 y enviar información relacionada con el evento, conforme al Reglamento (UE) 2016/679 (RGPD). Puedo ejercer mis derechos escribiendo a <a href="mailto:admin@canalempleoalmeria.com">admin@canalempleoalmeria.com</a>. <i style="color:var(--red);font-style:normal">*</i></span></label>
@@ -653,7 +649,7 @@ footer{background:#fff;padding:34px 0 26px}
         cErr.classList.toggle("err", !cc.length); if (!cc.length) bad(form.querySelector("#c_gb"));
       }
     }
-    if (form !== fI) {
+    if (form === fE) {
       var acts = form.querySelectorAll("input[name=act]:checked"), ae = form.querySelector("[data-acts-err]");
       ae.classList.toggle("err", !acts.length); if (!acts.length) bad(form.querySelector("[data-acts]"));
     }
@@ -683,7 +679,7 @@ footer{background:#fff;padding:34px 0 26px}
       tipo:"centro", centro:g("centro"), localidad:g("localidad"), email:g("email").toLowerCase(), telefono:g("telefono"),
       personas:[].map.call(form.querySelectorAll("input[name=persona]"), function(i){return i.value.trim();}).filter(Boolean),
       gradoBasico:lines(g("gradoBasico")), gradoMedio:lines(g("gradoMedio")), gradoSuperior:lines(g("gradoSuperior")),
-      actividades:acts
+      certificados:lines(g("certificados")), actividades:[]
     };
   }
 
@@ -713,6 +709,7 @@ footer{background:#fff;padding:34px 0 26px}
     document.querySelectorAll("[data-who]").forEach(function(b){ b.setAttribute("aria-pressed","false"); });
     document.getElementById("okCode").textContent = id;
     var items = d.actividades.map(function(aid){ var a = ACTS.filter(function(x){return x.id===aid;})[0]; return '<li><b>'+(a.dia==="v"?"21 oct":"22 oct")+' · '+a.h+'</b> — '+esc(a.t)+'</li>'; });
+    if (d.tipo === "centro") items.push('<li><b>22 oct · Hotel El Parador, Mojácar</b> — Stand de '+esc(d.centro)+' en la Feria FP Pyme</li>');
     if (d.tipo === "instituto") items.push('<li><b>22 oct · Hotel El Parador, Mojácar</b> — Visita a la Feria FP Pyme con unos '+d.alumnos+' alumnos</li>');
     if (d.cita) items.push('<li><b>22 oct · '+d.cita+'</b> — Cita con dinamizadores FP Dual</li>');
     document.getElementById("okList").innerHTML = items.join("") + '<li style="color:var(--muted)">Recibirás la confirmación en <b>'+esc(d.email)+'</b>.</li>';
